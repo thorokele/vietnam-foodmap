@@ -1,0 +1,369 @@
+/* ======================================================================
+   Vietnam Food Map — CSS panel
+   Built from the "Vietnam Food Map" design system. Every value below is a
+   token from tokens.json; change --sea or --pin once and the page follows.
+   ====================================================================== */
+
+/* ---- 1. Design tokens (Day theme) ---- */
+:root {
+  /* colour */
+  --sea: #2264f2;        --sea-deep: #143f9e;   --sea-text: #ffffff;   /* sea sampled from map.jpg */
+  --land: #fbf1dc;       --paper: #fbf1dc;      --paper-deep: #efdfb8;
+  --ink: #16213a;        --ink-muted: #4f5670;
+  --pin: #ff2d78;        --pin-deep: #c8004e;   --on-pin: #ffffff;
+  --lime: #c6f542;       --chili: #d1281f;
+  --focus: #16213a;      --focus-halo: #ffffff;
+  --link: var(--pin-deep);
+  /* thumbnail tints (screen-print inks, cycled per dish) */
+  --tint-lime: #c6f542;  --tint-sky: #7fd8ff;   --tint-sand: #f2d16b;
+
+  /* type — three hosted Google faces, no font files */
+  --font-display: "Lilita One", "Arial Black", Impact, sans-serif;
+  --font-body: "Be Vietnam Pro", "Segoe UI", Arial, sans-serif;
+  --font-hand: Caveat, "Comic Sans MS", cursive;
+
+  /* spacing: 4px grid */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+
+  /* radii: cut corners, not soft pills (except pin heads and notches) */
+  --radius-tag: 4px; --radius-sticker: 6px; --radius-ticket: 12px; --radius-pill: 999px;
+
+  /* shadows: printed offsets; shadow-lift is the only soft one and only mid-motion */
+  --shadow-sticker: 3px 3px 0 #16213a;
+  --shadow-ticket: 6px 6px 0 #16213a;
+  --shadow-lift: 0 12px 28px rgba(22, 33, 58, 0.35);
+
+  /* borders and texture */
+  --border-sticker: 3px; --border-hairline: 1px; --border-route: 4px;
+  --halftone-dot: 1.5px; --halftone-pitch: 8px; --grain-opacity: 0.08;
+  --tilt-sticker: -2deg;
+
+  /* map sizing */
+  --map-max: 820px;                                 /* desktop map width; height follows the 620:1000 viewBox */
+  --thumb-w: clamp(72px, 16vw, 120px);              /* thumbnail sticker width, scales with the viewport */
+}
+
+/* Night: only the sea darkens; paper stays warm. Add data-theme="night" to <html> to try it. */
+[data-theme="night"] {
+  --sea: #10306f; --sea-deep: #081c45;
+  --land: #f3e5c6; --paper: #f3e5c6; --paper-deep: #e6d5ae;
+  --pin: #ff4d8d; --lime: #d4ff5c; --chili: #b5221a;
+  --shadow-lift: 0 12px 28px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- 2. Base and textures ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background-color: var(--sea);
+  /* halftone: one sea-deep dot every halftone-pitch */
+  background-image: radial-gradient(var(--sea-deep) var(--halftone-dot), transparent calc(var(--halftone-dot) + 0.5px));
+  background-size: var(--halftone-pitch) var(--halftone-pitch);
+  min-height: 100vh;
+  overflow-x: hidden;   /* tilted stickers near the edge must not add a sideways scroll */
+}
+/* paper grain: two crossed 1px line patterns at grain-opacity over the paper colour */
+.paper {
+  position: relative;
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, var(--grain-opacity)) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, var(--grain-opacity)) 0 1px, transparent 1px 3px);
+}
+
+/* Shared focus ring: 3px ink ring outside a 2px white halo, so it reads on sea, land and paper */
+.pin:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--focus-halo);
+}
+
+/* ---- 3. Type styles (names match tokens.json) ---- */
+.title     { font: 400 64px/60px var(--font-display); letter-spacing: 0.01em; text-transform: uppercase; color: var(--sea-text); margin: 0; }
+.intro     { font: 500 18px/28px var(--font-body); color: var(--sea-text); max-width: 52ch; margin: var(--space-3) auto 0; }
+.dish-name { font: 400 30px/32px var(--font-display); color: var(--chili); margin: var(--space-3) 0 var(--space-1); overflow-wrap: anywhere; }
+.location  { font: 700 14px/20px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin: 0; }
+.receipt   { font: 500 13px/18px var(--font-body); letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
+.body      { font: 400 16px/24px var(--font-body); color: var(--ink); }
+.hand-note { font: 700 22px/24px var(--font-hand); }
+.btn       { font: 700 15px/20px var(--font-body); }
+
+/* ---- 4. Page: one column, the map is the page ---- */
+.page {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: center;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+  max-width: calc(var(--map-max) + 2 * var(--space-6));
+  margin: 0 auto;
+}
+.page > * { min-width: 0; }
+.header { text-align: center; }
+.title { display: inline-block; transform: rotate(var(--tilt-sticker)); transform-origin: left bottom; }
+
+/* ---- 5. Legend (a paper sticker strip, slightly tilted) ---- */
+.legend {
+  border: var(--border-sticker) solid var(--ink);
+  border-radius: var(--radius-sticker);
+  box-shadow: var(--shadow-sticker);
+  padding: var(--space-2) var(--space-4);
+  transform: rotate(calc(var(--tilt-sticker) / 2));
+}
+.legend-list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: var(--space-2) var(--space-5);
+  font: 400 14px/20px var(--font-body);
+}
+.legend-list li { display: flex; align-items: center; gap: var(--space-2); }
+.legend-pin {
+  width: 24px; height: 24px; flex: none;
+  border-radius: var(--radius-pill);
+  background: var(--pin-deep); color: var(--on-pin);
+  border: 2px solid var(--ink);
+  font: 400 12px/1 var(--font-display);
+  display: grid; place-items: center;
+}
+.legend-route { width: 28px; height: 0; flex: none; border-top: 4px solid var(--lime); box-shadow: 0 0 0 2px var(--ink); }
+
+/* ---- 6. Map canvas ---- */
+.map-wrap {
+  position: relative;
+  width: min(100%, var(--map-max));
+  aspect-ratio: 1024 / 1536;        /* the image's own ratio; pins and thumbs are placed as % of this box */
+}
+/* the illustrated map; its edges fade into the page's sea so it does not read as a pasted rectangle */
+.map-img {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent),
+                      linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent),
+              linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent);
+  mask-composite: intersect;
+}
+.map  { position: relative; display: block; width: 100%; height: 100%; overflow: visible; }
+/* lime route inside an ink casing: reads on land (lime alone is 1.3:1 there) and on sea */
+.route-casing { fill: none; stroke: var(--ink);  stroke-width: calc(var(--border-route) + 4px); stroke-linejoin: round; stroke-linecap: round; }
+.route        { fill: none; stroke: var(--lime); stroke-width: var(--border-route); stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 14 10; }
+/* leader lines: thinner, solid, so they read as "this sticker belongs to this pin" not as the route */
+.leader-casing { stroke: var(--ink);  stroke-width: 6; stroke-linecap: round; }
+.leader        { stroke: var(--lime); stroke-width: 2.5; stroke-linecap: round; }
+.phone-only { display: none; }
+.region-label  { font: 400 34px var(--font-display); fill: var(--sea-text); opacity: 0.85; letter-spacing: 0.12em; }
+
+/* "start here" scribble, placed in map coordinates by JS next to pin 01 */
+.map-note { position: absolute; margin: 0; color: var(--sea-text); transform: translate(-50%, -50%) rotate(-6deg); white-space: nowrap; }
+
+/* Pins live in a layer exactly the size of the SVG; left/top are % of the viewBox, anchored at the tip */
+.pins, .thumbs { position: absolute; inset: 0; pointer-events: none; }
+.pins > *, .thumbs > * { pointer-events: auto; }
+.pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  width: var(--space-7); height: var(--space-7);   /* 48px hit area around a 32px head */
+  padding: 0; border: 0; background: none;
+  cursor: pointer; touch-action: manipulation;
+  display: grid; place-items: end center;
+  border-radius: var(--radius-sticker);           /* shapes the focus ring */
+  z-index: 3;                                     /* above thumbnails and leader lines */
+}
+.pin-head {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-pill) var(--radius-pill) var(--radius-pill) 0;  /* pill head, pointed tail */
+  transform: rotate(-45deg);
+  background: var(--pin);
+  border: var(--border-sticker) solid var(--ink);
+  display: grid; place-items: center;
+  transition: transform 160ms ease-out, box-shadow 160ms ease-out;
+}
+.pin-head > span { transform: rotate(45deg); font: 400 13px/1 var(--font-display); color: var(--on-pin); display: grid; place-items: center; }
+.pin:hover .pin-head { transform: rotate(-45deg) scale(1.15); box-shadow: var(--shadow-lift); }
+/* selected: deeper fill + a white ring inside the ink outline; the open ticket and aria-pressed carry the rest */
+.pin[aria-pressed="true"] .pin-head { background: var(--pin-deep); box-shadow: inset 0 0 0 3px #ffffff; transform: rotate(-45deg) scale(1.3); }
+/* visited: deeper fill, check mark replaces the numeral (name suffix "(visited)" set in JS) */
+.pin.is-visited .pin-head { background: var(--pin-deep); }
+
+/* Icons: inline SVG paths in ink / on-pin — no icon font, no emoji */
+.icon-check { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.icon-close { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; }
+.pin .icon-check { width: 16px; height: 16px; animation: check-in 160ms ease-out; }
+@keyframes check-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---- 6b. Thumbnail stickers: a cropped, screen-printed picture of the dish with its name ---- */
+.thumb {
+  position: absolute;
+  width: var(--thumb-w);
+  transform: translate(-50%, -50%) rotate(var(--thumb-tilt, -3deg));
+  padding: 3px;                                  /* the white sticker edge */
+  background: #ffffff;
+  border-radius: var(--radius-sticker);
+  outline: 2px solid var(--ink);                 /* ink cut line around the white edge */
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 160ms ease-out, box-shadow 160ms ease-out;
+  z-index: 2;
+}
+.thumb:hover { transform: translate(-50%, -50%) rotate(var(--thumb-tilt, -3deg)) scale(1.06); box-shadow: var(--shadow-lift); }
+.thumb-img {
+  display: block; position: relative; overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: var(--tint);
+  border-radius: var(--radius-tag);
+}
+/* a real photo: greyscale, printed in one ink over the tint */
+.thumb-img img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.15); mix-blend-mode: multiply; }
+/* the halftone screen over every thumbnail, photo or placeholder */
+.thumb-img::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(var(--ink) 0.7px, transparent 1.1px);
+  background-size: 4px 4px;
+  opacity: 0.3;
+}
+/* placeholder: the pin number printed big on the tint, until a photo is added */
+.thumb-img .thumb-placeholder {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font: 400 clamp(28px, 5vw, 44px)/1 var(--font-display); color: var(--ink); opacity: 0.55;
+}
+.thumb-label {
+  display: block; margin: 3px 0 0; padding: 2px 2px 1px;
+  font: 400 clamp(11px, 1.4vw, 14px)/1.15 var(--font-display);
+  color: var(--ink); text-align: center; overflow-wrap: anywhere;
+}
+
+/* ---- 7. Selected state: dim everything except the selected pin and the ticket ---- */
+.scrim {
+  position: fixed; inset: 0; z-index: 4;
+  background: rgba(20, 63, 158, 0.55);           /* sea-deep at 55% */
+  -webkit-backdrop-filter: blur(1.5px);
+  backdrop-filter: blur(1.5px);
+  animation: fade-in 220ms ease-out;
+}
+.scrim[hidden] { display: none; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+/* pins stay clickable above the scrim so a visitor can switch dishes; unselected ones are softened */
+body.has-ticket .pin { z-index: 5; }
+body.has-ticket .pin:not([aria-pressed="true"]) { opacity: 0.55; }
+body.has-ticket .pin:not([aria-pressed="true"]) .pin-head { box-shadow: none; }
+/* the selected pin and its own sticker lift above the scrim, bright and sharp */
+body.has-ticket .pin[aria-pressed="true"] { opacity: 1; z-index: 6; }
+body.has-ticket .thumb.is-selected { z-index: 6; }
+
+/* ---- 8. Ticket: a dialog above the dimmed page (centred on desktop, bottom sheet on mobile) ---- */
+.ticket {
+  position: fixed; inset: 0; z-index: 7;
+  display: grid; place-items: center;
+  padding: var(--space-6) var(--space-4);
+  pointer-events: none;                          /* only the card catches clicks; the scrim gets the rest */
+}
+.ticket[hidden] { display: none; }
+.ticket-inner {
+  pointer-events: auto;
+  width: min(100%, 420px);
+  max-height: calc(100vh - 2 * var(--space-6));  /* fallback for browsers without dvh */
+  max-height: calc(100dvh - 2 * var(--space-6));
+  overflow: auto;
+  border: var(--border-sticker) solid var(--ink);
+  border-radius: var(--radius-ticket);
+  box-shadow: var(--shadow-ticket);
+  padding: var(--space-5);
+  /* slides in tilted like a torn-off stub, then squares up so the text is easy to read */
+  animation: ticket-in 220ms ease-out;
+}
+@keyframes ticket-in {
+  from { opacity: 0; transform: rotate(1.5deg) translateY(16px); }
+  to   { opacity: 1; transform: rotate(0deg) translateY(0); }
+}
+/* punched notches: two sea-coloured discs cut into the sides */
+.ticket-inner::before, .ticket-inner::after {
+  content: ""; position: absolute; top: 56px;
+  width: 24px; height: 24px; border-radius: var(--radius-pill);
+  background: var(--sea); border: var(--border-sticker) solid var(--ink);
+}
+.ticket-inner::before { left: -15px; }
+.ticket-inner::after  { right: -15px; }
+.ticket-meta {
+  display: flex; justify-content: space-between; gap: var(--space-2);
+  margin: 0 0 var(--space-3); padding-bottom: var(--space-2);
+  border-bottom: var(--border-hairline) dashed rgba(79, 86, 112, 0.4);
+}
+.ticket-photo {
+  aspect-ratio: 4 / 3; width: 100%;
+  border-radius: var(--radius-tag); overflow: hidden;
+  background: var(--paper-deep);
+  display: grid; place-content: center; text-align: center;
+}
+.ticket-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* honest placeholder: names the missing dish instead of showing a different one */
+.ticket-photo.is-placeholder {
+  border: 2px dashed var(--ink-muted); padding: var(--space-3);
+  font: 500 13px/18px var(--font-body); letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted);
+}
+.ticket-photo.is-placeholder strong { display: block; font-weight: 700; color: var(--ink); margin-bottom: var(--space-1); }
+.ticket-desc    { margin: var(--space-3) 0 0; }
+.ticket-actions { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-3); min-height: 44px;
+  border: var(--border-sticker) solid var(--ink); border-radius: var(--radius-sticker);
+  background: var(--paper); color: var(--ink);
+  box-shadow: var(--shadow-sticker); cursor: pointer;
+}
+.btn:hover  { background: var(--paper-deep); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.btn-primary { background: var(--pin-deep); color: var(--on-pin); }
+.btn-primary:hover { background: var(--chili); }
+#ticket-close:hover { background: var(--chili); color: var(--on-pin); }
+
+/* ---- 9. Responsive ---- */
+@media (max-width: 599px) {
+  .page { padding: var(--space-5) var(--space-4) var(--space-8); gap: var(--space-4); }
+  .title { font-size: 44px; line-height: 44px; }
+  .intro { font-size: 16px; line-height: 24px; }
+  .legend { transform: none; }
+  .legend-list { gap: var(--space-1) var(--space-4); font-size: 13px; }
+  .pin { width: 40px; height: 40px; }
+  .pin-head { width: 26px; height: 26px; }
+  .pin-head > span { font-size: 11px; }
+  .map-note { font-size: 18px; }
+  .region-label { font-size: 44px; }
+  .region-label.phone-only { display: block; font-size: 34px; }
+  .region-label.wide-only { display: none; }
+  :root { --thumb-w: 48px; }
+  .thumb-label { font-size: 11px; }
+  /* while the sheet is open, add scroll room so any pin can be brought above it */
+  body.has-ticket .page { padding-bottom: 72vh; }
+
+  /* bottom sheet, capped so the map (and the selected pin, scrolled into view by JS) stays visible above it */
+  .ticket { place-items: end stretch; padding: 0; }
+  .ticket-inner {
+    width: 100%;
+    max-height: 72vh;
+    max-height: 72dvh;
+    border-radius: var(--radius-ticket) var(--radius-ticket) 0 0;
+    border-bottom: 0; box-shadow: none;
+    padding: var(--space-4) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom));
+    animation-name: sheet-up;
+  }
+  .ticket-inner::before, .ticket-inner::after { display: none; }
+  .ticket-meta { padding-right: 56px; }  /* clear the round close button */
+  #ticket-close {
+    position: absolute; top: var(--space-3); right: var(--space-3);
+    width: 48px; height: 48px; padding: 0; justify-content: center;
+    border-radius: var(--radius-pill);
+  }
+  #ticket-close .icon-close { width: 18px; height: 18px; }
+  #ticket-close .btn-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @keyframes sheet-up { from { transform: translateY(32px); opacity: 0; } to { transform: none; opacity: 1; } }
+}
+
+/* Reduced motion: the ticket simply appears, the scrim simply shows, the pin simply changes state */
+@media (prefers-reduced-motion: reduce) {
+  .ticket-inner, .scrim, .pin-head, .pin .icon-check, .thumb, .btn { animation: none !important; transition: none !important; }
+  .scrim { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}

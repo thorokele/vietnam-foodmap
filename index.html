@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vietnam Food Map</title>
+  <!-- CodePen: put these two <link> lines in Pen Settings → HTML → "Stuff for <head>" -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Be+Vietnam+Pro:wght@400;500;700&family=Caveat:wght@700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- ======================================================================
+     CodePen HTML panel starts here (everything inside <body>, minus the
+     <script> tag at the bottom — that goes in the JS panel).
+     ====================================================================== -->
+<main class="page">
+
+  <!-- Header: title + one-line instruction, set straight on the sea -->
+  <header class="header">
+    <h1 class="title">Vietnam Food Map</h1>
+    <p class="intro">Tap a pin. Collect the ticket. Scroll south from Hà Nội to the Mekong Delta - eight dishes, one map.</p>
+  </header>
+
+  <!-- Legend: a paper sticker strip with the three marks used on the map -->
+  <aside class="legend paper" aria-label="Legend">
+    <ul class="legend-list">
+      <li><span class="legend-pin" aria-hidden="true">1</span> Numbered pin = a dish</li>
+      <li>
+        <span class="legend-pin" aria-hidden="true">
+          <svg class="icon-check" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><polyline points="3,8.5 6.5,12 13,4.5"/></svg>
+        </span>
+        Check = ticket collected
+      </li>
+      <li><span class="legend-route" aria-hidden="true"></span> Route north to south</li>
+      <li class="receipt legend-count" id="legend-count" aria-live="polite">00 / 08 collected</li>
+    </ul>
+  </aside>
+
+  <!-- Map canvas: the illustrated map image, with the route, leader lines, pins and thumbnails drawn over it.
+       Everything is placed in the image's own pixel space (1024 x 1536), so it scales with the image. -->
+  <section class="map-wrap" aria-label="Map of Vietnam with dish pins">
+    <!-- map.jpg: the illustrated map. Decorative for screen readers; the pins carry the names. -->
+    <img class="map-img" src="map.jpg" alt="" width="1024" height="1536">
+    <svg class="map" viewBox="0 0 1024 1536" aria-hidden="true" focusable="false">
+      <!-- Route: JS fills the points from the dish table so it always connects the pins -->
+      <polyline class="route-casing"/>
+      <polyline class="route"/>
+      <!-- Leader lines from each pin to its thumbnail: JS fills this group -->
+      <g class="leaders" id="leaders"></g>
+      <text class="region-label" x="600" y="345">NORTH</text>
+      <text class="region-label wide-only" x="30" y="968">CENTRAL</text>
+      <text class="region-label phone-only" x="498" y="600">CENTRAL</text>
+      <text class="region-label" x="290" y="1470">SOUTH</text>
+    </svg>
+    <!-- JS fills these layers: one <button class="pin"> and one .thumb sticker per dish -->
+    <div class="thumbs" id="thumbs"></div>
+    <div class="pins" id="pins"></div>
+    <p class="hand-note map-note" aria-hidden="true">start here ↓</p>
+  </section>
+
+  <!-- Dimming overlay + ticket: hidden until a pin is selected -->
+  <div class="scrim" id="scrim" hidden></div>
+  <article class="ticket" id="ticket" role="dialog" aria-modal="true" aria-labelledby="ticket-name" hidden>
+    <div class="ticket-inner paper">
+      <p class="receipt ticket-meta">
+        <span id="ticket-count">Ticket 01 / 08</span>
+        <span id="ticket-status">New</span>
+      </p>
+      <div class="ticket-photo" id="ticket-photo"></div>
+      <h2 class="dish-name" id="ticket-name">Dish</h2>
+      <p class="location" id="ticket-place">City · Region</p>
+      <p class="body ticket-desc" id="ticket-desc"></p>
+      <div class="ticket-actions">
+        <button class="btn" id="ticket-close" type="button">
+          <svg class="icon-close" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 3 L13 13 M13 3 L3 13"/></svg>
+          <span class="btn-label">Close</span>
+        </button>
+        <button class="btn btn-primary" id="ticket-next" type="button">Explore another dish</button>
+      </div>
+    </div>
+  </article>
+
+</main>
+<!-- ===== CodePen HTML panel ends here ===== -->
+
+<script src="script.js"></script>
+</body>
+</html>
