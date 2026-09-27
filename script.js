@@ -4,7 +4,18 @@
    touch and keyboard all work without extra code.
    ====================================================================== */
 
-// 0. Map coordinate space = the pixels of map.jpg (1024 wide, 1536 tall). Pins, thumbnails, leader lines and
+// 0. The map image. Loaded from the GitHub repo so the Pen needs no uploaded asset; if that URL fails
+//    (offline, repo renamed), the page falls back to a map.jpg sitting next to index.html.
+const MAP_IMAGE_URL = "https://raw.githubusercontent.com/thorokele/vietnam-foodmap/main/map.jpg";
+const MAP_IMAGE_FALLBACK = "map.jpg";
+// Dish photos live in the repo's images/ folder; photo(id) builds the URL for a dish's file.
+const IMAGES_URL = "https://raw.githubusercontent.com/thorokele/vietnam-foodmap/main/images/";
+const photo = (file, alt) => ({ src: IMAGES_URL + file, alt });
+const mapImg = document.querySelector(".map-img");
+mapImg.addEventListener("error", () => { if (mapImg.src !== MAP_IMAGE_FALLBACK) mapImg.src = MAP_IMAGE_FALLBACK; }, { once: true });
+mapImg.src = MAP_IMAGE_URL;
+
+// 0b. Map coordinate space = the pixels of map.jpg (1024 wide, 1536 tall). Pins, thumbnails, leader lines and
 //    the note are all placed from the same numbers, as % of the map box, so they scale with the image.
 const VB = { x: 0, w: 1024, h: 1536 };
 const pctX = (x) => ((x - VB.x) / VB.w) * 100 + "%";
@@ -20,28 +31,32 @@ const pctY = (y) => (y / VB.h) * 100 + "%";
 //    thumbSrc (optional): a separate, tighter crop for the small sticker; defaults to image.src.
 const DISHES = [
   { id: "bun-cha", number: 1, name: "Bún chả", label: "Bún chả", city: "Hà Nội", region: "Northern Vietnam",
-    x: 385, y: 225, m: { x: 368, y: 212 }, thumb: { x: 680, y: 130, tilt: 3 }, tint: "lime", image: null, thumbSrc: null,
+    x: 385, y: 225, m: { x: 368, y: 212 }, thumb: { x: 680, y: 130, tilt: 3 }, tint: "lime", image: photo("bun-cha.jpg", "Bún chả: grilled pork patties and pork belly in a bowl of dipping broth, with plates of rice vermicelli, herbs and pickled green papaya and carrot"), thumbSrc: null,
     description: "Grilled pork patties and slices of pork belly sit in a bowl of warm, sweet-sour fish-sauce broth. Rice vermicelli and a pile of fresh herbs come on the side to dip as you go." },
   { id: "pho-bo", number: 2, name: "Phở bò", label: "Phở bò", city: "Hà Nội / Nam Định", region: "Northern Vietnam",
-    x: 432, y: 268, m: { x: 448, y: 280 }, thumb: { x: 95, y: 380, tilt: -3, m: { x: 95, y: 300 } }, tint: "sky", image: null, thumbSrc: null,
+    x: 432, y: 268, m: { x: 448, y: 280 }, thumb: { x: 95, y: 380, tilt: -3, m: { x: 95, y: 300 } }, tint: "sky", image: photo("pho-bo.jpg", "Phở bò: flat rice noodles in clear broth with rare and cooked beef slices, onion, scallion and cilantro, herbs and lime on the side"), thumbSrc: null,
     description: "Flat rice noodles in a clear beef broth simmered with charred ginger and onion, star anise and cinnamon, topped with sliced beef and scallion. Both Nam Định and Hà Nội are associated with its beginnings." },
   { id: "bun-bo-hue", number: 3, name: "Bún bò Huế", label: "Bún bò Huế", city: "Huế", region: "Central Vietnam",
-    x: 500, y: 670, m: { x: 488, y: 638 }, thumb: { x: 150, y: 610, tilt: -3, m: { x: 150, y: 560 } }, tint: "sand", image: null, thumbSrc: null,
+    x: 500, y: 670, m: { x: 488, y: 638 }, thumb: { x: 150, y: 610, tilt: -3, m: { x: 150, y: 560 } }, tint: "sand", image: photo("bun-bo-hue.jpg", "Bún bò Huế: thick round noodles in red broth with sliced beef, a pork knuckle and a slice of pork loaf, topped with herbs and scallion"), thumbSrc: null,
     description: "Thick round rice noodles in a beef-bone broth scented with lemongrass and coloured with annatto and chili. Beef shank, a slice of pork and often cubes of pork blood are served with shredded banana blossom and herbs." },
   { id: "cao-lau", number: 4, name: "Cao lầu", label: "Cao lầu", city: "Hội An", region: "Central Vietnam",
-    x: 538, y: 722, m: { x: 566, y: 722 }, thumb: { x: 850, y: 735, tilt: 3, m: { x: 850, y: 730 } }, tint: "lime", image: null, thumbSrc: null,
+    x: 538, y: 722, m: { x: 566, y: 722 }, thumb: { x: 850, y: 735, tilt: 3, m: { x: 850, y: 730 } }, tint: "lime", image: photo("cao-lau.jpg", "Cao lầu: thick noodles with sliced char siu pork, crisp fried dough squares, fried shallots, bean sprouts and fresh herbs"), thumbSrc: null,
     description: "Chewy, yellow-tinted noodles served nearly dry with a splash of broth, slices of seasoned pork, crisp fried dough squares, bean sprouts and greens. It is closely tied to Hội An and rarely served far from it." },
   { id: "mi-quang", number: 5, name: "Mì Quảng", label: "Mì Quảng", city: "Quảng Nam", region: "Central Vietnam",
-    x: 528, y: 778, m: { x: 505, y: 832 }, thumb: { x: 140, y: 840, tilt: 2, m: { x: 140, y: 820 } }, tint: "sky", image: null, thumbSrc: null,
+    x: 528, y: 778, m: { x: 505, y: 832 }, thumb: { x: 140, y: 840, tilt: 2, m: { x: 140, y: 820 } }, tint: "sky", image: photo("mi-quang.jpg", "Mì Quảng: wide turmeric noodles with shrimp, pork, crushed peanuts, herbs and a sesame rice cracker on the rim"), thumbSrc: null,
     description: "Wide turmeric-yellow rice noodles with only a little rich broth, shrimp and pork, crushed peanuts and herbs, with a toasted sesame rice cracker to break over the top. Eaten across Quảng Nam and Đà Nẵng." },
   { id: "nem-nuong", number: 6, name: "Nem nướng Nha Trang", label: "Nem nướng", city: "Nha Trang", region: "South-Central coast",
     x: 585, y: 1030, thumb: { x: 860, y: 925, tilt: -3, m: { x: 860, y: 990 } }, tint: "sand", image: null, thumbSrc: null,
     description: "Grilled minced-pork skewers are rolled at the table in rice paper with lettuce, herbs, pickled vegetables and crispy fried rice-paper strips. The roll is dipped in a thick, peanut-based sauce." },
   { id: "com-tam", number: 7, name: "Cơm tấm", label: "Cơm tấm", city: "Hồ Chí Minh City", region: "Southern Vietnam",
-    x: 480, y: 1150, thumb: { x: 150, y: 1080, tilt: -2, m: { x: 150, y: 1080 } }, tint: "lime", image: null, thumbSrc: null,
+    x: 470, y: 1140, m: { x: 455, y: 1120 }, thumb: { x: 150, y: 1080, tilt: -2 }, tint: "lime", image: photo("com-tam.jpg", "Cơm tấm: broken rice with a grilled pork chop, fried egg, scallion oil, pickled carrot and daikon, cucumber and fish sauce"), thumbSrc: null,
     description: "Broken rice served with a grilled pork chop, shredded pork skin, a slice of steamed egg-and-pork loaf, pickles and a small bowl of sweet fish sauce. Common at breakfast and late at night alike." },
-  { id: "banh-xeo", number: 8, name: "Bánh xèo (Southern style)", label: "Bánh xèo", city: "Cần Thơ", region: "Mekong Delta",
-    x: 375, y: 1225, thumb: { x: 600, y: 1420, tilt: 3 }, tint: "sky", image: null, thumbSrc: null,
+  { id: "banh-mi", number: 8, name: "Bánh mì (Sài Gòn style)", label: "Bánh mì", city: "Hồ Chí Minh City", region: "Southern Vietnam",
+    x: 520, y: 1175, m: { x: 545, y: 1190 }, thumb: { x: 330, y: 1440, tilt: -2 }, tint: "sand", thumbSrc: null,
+    image: photo("banh-mi.jpg", "Bánh mì: a crusty baguette filled with pâté, sliced pork, pickled carrot and daikon, cucumber, cilantro and red chili"),
+    description: "A crusty, airy baguette split and filled with pâté, cold cuts, pickled daikon and carrot, cucumber, cilantro and chili. Bánh mì is eaten all over Vietnam; this is the Sài Gòn-style filling." },
+  { id: "banh-xeo", number: 9, name: "Bánh xèo (Southern style)", label: "Bánh xèo", city: "Cần Thơ", region: "Mekong Delta",
+    x: 375, y: 1225, m: { x: 360, y: 1250 }, thumb: { x: 600, y: 1420, tilt: 3 }, tint: "sky", image: photo("banh-xeo.jpg", "Bánh xèo: a crisp turmeric crêpe folded over shrimp, pork and bean sprouts, with lettuce, herbs, cucumber and nước chấm"), thumbSrc: null,
     description: "A large, thin, crisp turmeric-yellow rice-flour crêpe folded over shrimp, pork and bean sprouts. It is torn into pieces, wrapped in lettuce and herbs and dipped in nước chấm. The Central version is smaller and thicker." }
 ];
 

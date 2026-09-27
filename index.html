@@ -19,7 +19,7 @@
   <!-- Header: title + one-line instruction, set straight on the sea -->
   <header class="header">
     <h1 class="title">Vietnam Food Map</h1>
-    <p class="intro">Tap a pin. Collect the ticket. Scroll south from Hà Nội to the Mekong Delta - eight dishes, one map.</p>
+    <p class="intro">Tap a pin. Collect the ticket. Scroll south from Hà Nội to the Mekong Delta - nine dishes, one map.</p>
   </header>
 
   <!-- Legend: a paper sticker strip with the three marks used on the map -->
@@ -33,15 +33,15 @@
         Check = ticket collected
       </li>
       <li><span class="legend-route" aria-hidden="true"></span> Route north to south</li>
-      <li class="receipt legend-count" id="legend-count" aria-live="polite">00 / 08 collected</li>
+      <li class="receipt legend-count" id="legend-count" aria-live="polite">00 / 09 collected</li>
     </ul>
   </aside>
 
   <!-- Map canvas: the illustrated map image, with the route, leader lines, pins and thumbnails drawn over it.
        Everything is placed in the image's own pixel space (1024 x 1536), so it scales with the image. -->
   <section class="map-wrap" aria-label="Map of Vietnam with dish pins">
-    <!-- map.jpg: the illustrated map. Decorative for screen readers; the pins carry the names. -->
-    <img class="map-img" src="map.jpg" alt="" width="1024" height="1536">
+    <!-- The illustrated map. script.js sets the src (MAP_IMAGE_URL). Decorative for screen readers; the pins carry the names. -->
+    <img class="map-img" alt="" width="1024" height="1536">
     <svg class="map" viewBox="0 0 1024 1536" aria-hidden="true" focusable="false">
       <!-- Route: JS fills the points from the dish table so it always connects the pins -->
       <polyline class="route-casing"/>
@@ -51,7 +51,7 @@
       <text class="region-label" x="600" y="345">NORTH</text>
       <text class="region-label wide-only" x="30" y="968">CENTRAL</text>
       <text class="region-label phone-only" x="498" y="600">CENTRAL</text>
-      <text class="region-label" x="290" y="1470">SOUTH</text>
+      <text class="region-label" x="30" y="1330">SOUTH</text>
     </svg>
     <!-- JS fills these layers: one <button class="pin"> and one .thumb sticker per dish -->
     <div class="thumbs" id="thumbs"></div>
