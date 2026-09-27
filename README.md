@@ -35,12 +35,8 @@ keep the same 1024 × 1536 size or re-measure the pins.
 ## Dish photos
 
 Photos live in `images/<dish-id>.jpg` (1000 × 1000 JPEGs) and are loaded from this repo via `IMAGES_URL` in
-`script.js`, so the Pen needs no uploaded assets. Eight of the nine dishes have a photo; `nem-nuong` still shows the
-labelled placeholder until you add `images/nem-nuong.jpg` and change its line to:
-
-```js
-image: photo("nem-nuong.jpg", "Nem nướng Nha Trang: grilled pork skewers with rice paper, herbs and peanut sauce"),
-```
+`script.js`, so the Pen needs no uploaded assets. All nine dishes have a photo; the ticket shows it whole (no cropping), and the map sticker
+shows a square centre crop of the same file.
 
 To swap any photo, replace the file in `images/` (keep the name) and push — or point `photo(...)` at a different file.
 

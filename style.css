@@ -297,7 +297,9 @@ body.has-ticket .thumb.is-selected { z-index: 6; }
   background: var(--paper-deep);
   display: grid; place-content: center; text-align: center;
 }
-.ticket-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* a real photo is shown whole, never cropped: the box takes the photo's own shape, capped so the ticket still fits a short screen */
+.ticket-photo:not(.is-placeholder) { aspect-ratio: auto; }
+.ticket-photo img { width: 100%; height: auto; max-height: 46vh; object-fit: contain; display: block; }
 /* honest placeholder: names the missing dish instead of showing a different one */
 .ticket-photo.is-placeholder {
   border: 2px dashed var(--ink-muted); padding: var(--space-3);
