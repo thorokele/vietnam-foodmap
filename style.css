@@ -113,7 +113,7 @@ body {
 }
 .page > * { min-width: 0; }
 .header { text-align: center; }
-.title { display: inline-block; transform: rotate(var(--tilt-sticker)); transform-origin: left bottom; }
+.title { display: inline-block; }
 
 /* ---- 5. Legend (a paper sticker strip, slightly tilted) ---- */
 .legend {
@@ -121,7 +121,6 @@ body {
   border-radius: var(--radius-sticker);
   box-shadow: var(--shadow-sticker);
   padding: var(--space-2) var(--space-4);
-  transform: rotate(calc(var(--tilt-sticker) / 2));
 }
 .legend-list {
   list-style: none; margin: 0; padding: 0;
@@ -335,7 +334,6 @@ body.has-ticket .thumb.is-selected { z-index: 6; }
   .page { padding: var(--space-5) var(--space-4) var(--space-8); gap: var(--space-4); }
   .title { font-size: 44px; line-height: 44px; }
   .intro { font-size: 16px; line-height: 24px; }
-  .legend { transform: none; }
   .legend-list { gap: var(--space-1) var(--space-4); font-size: 13px; }
   .pin { width: 40px; height: 40px; }
   .pin-head { width: 26px; height: 26px; }

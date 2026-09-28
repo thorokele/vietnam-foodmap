@@ -241,7 +241,7 @@ function markVisited(id) {
   el("legend-count").textContent = `${pad(visited.size)} / ${pad(DISHES.length)} collected`;
 }
 
-// "Explore another dish": close, then move focus to the next unvisited pin (wrapping around).
+// "Collect dish": collect this ticket (close it), then move focus to the next unvisited pin (wrapping around).
 // When every ticket is collected, focus returns to the pin that opened this one.
 function exploreNext() {
   const current = DISHES.findIndex((d) => d.id === selectedId);
