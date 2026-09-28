@@ -4,6 +4,14 @@
    token from tokens.json; change --sea or --pin once and the page follows.
    ====================================================================== */
 
+/* ---- 0. Title face: Greedy Louding (Ronny Studio, free for personal use). Loaded from the repo, with a local fallback. ---- */
+@font-face {
+  font-family: "Greedy Louding";
+  src: url("https://raw.githubusercontent.com/thorokele/vietnam-foodmap/main/fonts/GreedyLouding.woff2") format("woff2"),
+       url("fonts/GreedyLouding.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+
 /* ---- 1. Design tokens (Day theme) ---- */
 :root {
   /* colour */
@@ -18,7 +26,9 @@
   --tint-lime: #c6f542;  --tint-sky: #7fd8ff;   --tint-sand: #f2d16b;
 
   /* type — three hosted Google faces, no font files */
-  --font-display: "Lilita One", "Arial Black", Impact, sans-serif;
+  --font-title: "Greedy Louding", "Lilita One", "Arial Black", Impact, sans-serif;   /* the page title only */
+  --font-dish: "Dela Gothic One", "Lilita One", "Arial Black", Impact, sans-serif;   /* dish names on tickets and stickers (has Vietnamese glyphs) */
+  --font-display: "Lilita One", "Arial Black", Impact, sans-serif;                    /* pin numerals, region labels */
   --font-body: "Be Vietnam Pro", "Segoe UI", Arial, sans-serif;
   --font-hand: Caveat, "Comic Sans MS", cursive;
 
@@ -83,9 +93,9 @@ body {
 }
 
 /* ---- 3. Type styles (names match tokens.json) ---- */
-.title     { font: 400 64px/60px var(--font-display); letter-spacing: 0.01em; text-transform: uppercase; color: var(--sea-text); margin: 0; }
+.title     { font: 400 64px/60px var(--font-title); letter-spacing: 0.01em; text-transform: uppercase; color: var(--sea-text); margin: 0; }
 .intro     { font: 500 18px/28px var(--font-body); color: var(--sea-text); max-width: 52ch; margin: var(--space-3) auto 0; }
-.dish-name { font: 400 30px/32px var(--font-display); color: var(--chili); margin: var(--space-3) 0 var(--space-1); overflow-wrap: anywhere; }
+.dish-name { font: 400 26px/32px var(--font-dish); color: var(--chili); margin: var(--space-3) 0 var(--space-1); overflow-wrap: anywhere; }
 .location  { font: 700 14px/20px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin: 0; }
 .receipt   { font: 500 13px/18px var(--font-body); letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
 .body      { font: 400 16px/24px var(--font-body); color: var(--ink); }
@@ -156,8 +166,6 @@ body {
 .phone-only { display: none; }
 .region-label  { font: 400 34px var(--font-display); fill: var(--sea-text); opacity: 0.85; letter-spacing: 0.12em; }
 
-/* "start here" scribble, placed in map coordinates by JS next to pin 01 */
-.map-note { position: absolute; margin: 0; color: var(--sea-text); transform: translate(-50%, -50%) rotate(-6deg); white-space: nowrap; }
 
 /* Pins live in a layer exactly the size of the SVG; left/top are % of the viewBox, anchored at the tip */
 .pins, .thumbs { position: absolute; inset: 0; pointer-events: none; }
@@ -231,7 +239,7 @@ body {
 }
 .thumb-label {
   display: block; margin: 3px 0 0; padding: 2px 2px 1px;
-  font: 400 clamp(11px, 1.4vw, 14px)/1.15 var(--font-display);
+  font: 400 clamp(10px, 1.2vw, 12px)/1.2 var(--font-dish);
   color: var(--ink); text-align: center; overflow-wrap: anywhere;
 }
 
@@ -332,12 +340,11 @@ body.has-ticket .thumb.is-selected { z-index: 6; }
   .pin { width: 40px; height: 40px; }
   .pin-head { width: 26px; height: 26px; }
   .pin-head > span { font-size: 11px; }
-  .map-note { font-size: 18px; }
   .region-label { font-size: 44px; }
   .region-label.phone-only { display: block; font-size: 34px; }
   .region-label.wide-only { display: none; }
   :root { --thumb-w: 48px; }
-  .thumb-label { font-size: 11px; }
+  .thumb-label { font-size: 10px; }
   /* while the sheet is open, add scroll room so any pin can be brought above it */
   body.has-ticket .page { padding-bottom: 72vh; }
 

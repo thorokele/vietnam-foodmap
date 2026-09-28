@@ -20,8 +20,15 @@ Then in **Pen Settings → HTML → Stuff for `<head>`** paste the font link:
 
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Be+Vietnam+Pro:wght@400;500;700&family=Caveat:wght@700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Dela+Gothic+One&family=Be+Vietnam+Pro:wght@400;500;700&family=Caveat:wght@700&display=swap">
 ```
+
+## Fonts
+
+- **Title** — Greedy Louding (Ronny Studio), `fonts/GreedyLouding.woff2`, loaded from this repo by the `@font-face` at the top of
+  `style.css`. Its readme says it is **free for personal use only**; a license from ronnystudio.com is needed for any commercial use.
+- **Dish names** (ticket and map stickers) — Dela Gothic One from Google Fonts (covers Vietnamese diacritics).
+- **Pin numerals and region labels** — Lilita One; **body text** — Be Vietnam Pro.
 
 ## The map image
 
@@ -51,7 +58,7 @@ Add `data-theme="night"` to the `<html>` tag. Only the sea darkens; paper stays 
 ## What could break
 
 - **Map image missing**: the GitHub raw URL is blocked or the file was moved → the page tries the local `map.jpg`; if that is missing too, you get pins on a plain blue sea. Fix `MAP_IMAGE_URL` in `script.js`.
-- **Fonts not loaded** (no internet, or the head link is missing): titles fall back to Arial Black / Segoe UI. Diacritics still render.
+- **Fonts not loaded** (no internet, the head link is missing, or the repo font URL is blocked): the title and dish names fall back to Lilita One, then Arial Black. Diacritics still render.
 - **Pins drift off the land**: `.map-wrap` lost its `aspect-ratio: 400 / 1000`, or `.pins` is no longer `inset: 0` inside it. Pin positions are percentages of that box. Move a pin by changing its `x, y` in `DISHES`, never in CSS — the route is drawn from the same numbers.
 - **Ticket clips on a short phone**: `.ticket` needs its `max-height` and `overflow: auto` (already set, with a `vh` fallback for browsers without `dvh`).
 - **Escape does nothing**: the listener is on `document`; if the Pen is embedded, click inside the frame once.

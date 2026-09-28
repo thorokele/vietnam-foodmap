@@ -16,7 +16,7 @@ mapImg.addEventListener("error", () => { if (mapImg.src !== MAP_IMAGE_FALLBACK) 
 mapImg.src = MAP_IMAGE_URL;
 
 // 0b. Map coordinate space = the pixels of map.jpg (1024 wide, 1536 tall). Pins, thumbnails, leader lines and
-//    the note are all placed from the same numbers, as % of the map box, so they scale with the image.
+//    the region labels are all placed from the same numbers, as % of the map box, so they scale with the image.
 const VB = { x: 0, w: 1024, h: 1536 };
 const pctX = (x) => ((x - VB.x) / VB.w) * 100 + "%";
 const pctY = (y) => (y / VB.h) * 100 + "%";
@@ -130,7 +130,6 @@ DISHES.forEach((dish) => {
 // 4d. Place everything. Runs once now and again on resize, because stickers are bigger relative to
 //     the map on phones (some have a phone-only position, thumb.m) and must stay inside the map's edges.
 const mapWrap = document.querySelector(".map-wrap");
-const note = document.querySelector(".map-note");
 function layout() {
   // How wide a sticker is in map units, so it can be kept inside the map
   const firstThumb = thumbsLayer.firstElementChild;
@@ -157,10 +156,6 @@ function layout() {
       line.setAttribute("x2", tx);     line.setAttribute("y2", ty);
     });
   });
-
-  // The "start here ↓" scribble floats in the sea above the northern coast, over pin 01
-  note.style.left = pctX(pinPos(DISHES[0]).x);
-  note.style.top = pctY(50);
 }
 layout();
 let resizeTimer;
